@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<project name="Alfresco Share Link Document Action" default="package" basedir=".">
+
+    <property name="module.id" value="linkto" />
+
+    <property name="project.dir" value="."/>
+    <property name="source.dir" value="${project.dir}/source" />
+    <property name="build.dir" value="${project.dir}/build"/>
+    <property name="package.file" value="${build.dir}/linkto-action.jar"/>
+    <property name="package.repo.file" value="${build.dir}/linkto-repo.amp" />
+
+    <path id="class.path">
+        <dirset dir="${build.dir}" />
+    </path>
+
+   <target name="compile">
+      <javac classpathref="class.path" srcdir="${source.dir}" destdir="${build.dir}" />
+   </target>
+
+    <target name="js.minify">
+        <apply executable="java" parallel="false">
+            <fileset dir="." includes="**/linkto-actions.js"/>
+            <arg line="-jar"/>
+            <arg path="lib/yuicompressor-2.4.7.jar"/>
+            <srcfile/>
+            <arg line="-o"/>
+            <mapper type="glob" from="*.js" to="*-min.js"/>
+            <targetfile/>
+        </apply>
+    </target>
+
+    <target name="build">
+      <mkdir dir="${build.dir}" />
+    </target>
+
+
+    <target name="amp-repo" depends="build, compile, js.minify">
+        <delete file="${package.repo.file}" />
+        <zip destfile="${package.repo.file}">
+            <zipfileset dir="${project.dir}/config/alfresco" prefix="config" />
+            <zipfileset file="${project.dir}/module.properties" />
+        </zip>
+    </target>
+
+
+    <target name="package" depends="build, compile, js.minify, amp-repo">
+        <delete file="${package.file}" />
+        <jar destfile="${package.file}">
+            <zipfileset dir="${source.dir}/java" includes="**/*.xml,**/*.properties" />
+            <zipfileset dir="${project.dir}/config" includes="**/*.*"
+                excludes="**/module.properties,**/file-mapping.properties,alfresco/extension/symlink-model-context.xml,alfresco/extension/model/**"/>
+            <zipfileset dir="${project.dir}/config/alfresco/module/${module.id}"
+                    includes="module.properties,file-mapping.properties"/>
+        </jar>
+    </target>
+
+   <target name="clean">
+        <delete quiet="yes" includeEmptyDirs="true" dir="${build.dir}"/>
+    </target>
+</project>	
