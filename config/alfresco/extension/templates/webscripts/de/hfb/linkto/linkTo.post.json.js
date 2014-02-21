@@ -20,12 +20,11 @@ function runAction(p_params)
     var results = [];
 
     // Must have array of files
-    if (!files || files.length == 0) {
-        status.setCode(status.STATUS_BAD_REQUEST, "No files.");
+    if (!files || !files.length || files.length == 0) {
+        status.setCode(status.STATUS_BAD_REQUEST, "No files given.");
         return;
     }
-
-
+    
     files.forEach(function(ref, i) {
         var fileNode = search.findNode(ref);
         var result = {
@@ -35,15 +34,20 @@ function runAction(p_params)
         };
 
         if (null == fileNode) {
-            result.id = i;
             results.push(result);
             return;
         }
 
-        destNode.addNode(fileNode);
-        fileNode.parents.push(destNode);
-
-        result.success = true;
+        var symlink = destNode.createNode(fileNode.name, "app:filelink", {
+        		"cm:destination": fileNode
+        	});
+        if (symlink) {
+            symlink.save();
+            
+            result.id = symlink.name;
+            result.nodeRef = symlink.nodeRef.toString();
+            result.success = true;
+        }
 
         results.push(result);
     });

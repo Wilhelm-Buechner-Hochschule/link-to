@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <webscript>
     <shortname>linkTo</shortname>
     <description>Create a link to a document in another folder.</description>
@@ -8,6 +8,8 @@
     <url>/hfb/linkTo/node/{store_type}/{store_id}/{id}</url>
     <url>/hfb/linkTo/node/{store_type}/{store_id}</url>
     <format default="json">argument</format>
+    <!--  <url>/hfb/linkTo</url>
+    <format default="json" /> -->
     <authentication>user</authentication>
     <transaction>required</transaction>
     <lifecycle>internal</lifecycle>

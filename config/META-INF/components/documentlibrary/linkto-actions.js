@@ -31,13 +31,14 @@
                             stem: Alfresco.constants.PROXY_URI,
                             method: Alfresco.util.Ajax.POST,
                             params: {
-                                nodeRef: nodeRef.uri
+                               nodeRef: nodeRef.uri
                             },
                         },
                         config: {
                             requestContentType: Alfresco.util.Ajax.JSON,
                             dataObj: {
                                 nodeRefs: [file.nodeRef],
+                                destNode: nodeRef,
                                 parentId: that.options.parentId
                             }
                         }
